@@ -8,7 +8,7 @@ const GOOGLE_CLIENT_SECRET = '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';
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:8080/auth/google/callback"
+    callbackURL: "https://bookinghub-backend.herokuapp.com/auth/google/callback"
 },
     async function (accessToken, refreshToken, profile, cb) {
         return cb(null, profile);
