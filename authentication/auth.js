@@ -1,4 +1,4 @@
-const database = require('../database');
+// const database = require('../database');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -11,8 +11,7 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:8080/auth/google/callback"
 },
     async function (accessToken, refreshToken, profile, cb) {
-        let userProfileInDatabase = await database.GetUserFromEmail(profile.emails.at(0).value);
-        return cb(null, userProfileInDatabase);
+        return cb(null, profile);
     }
 ));
 

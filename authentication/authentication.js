@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const cookieParser = require("cookie-parser");
 const passport = require('passport');
-const database = require('../database');
+// const database = require('../database');
 require('./auth.js');
 
 //login rồi thì không được truy cập
@@ -33,26 +33,26 @@ router.route('/login')
     .get(redirectToHomePageIfAlreadyLoggedIn, (req, res) => {
         res.send('<a href="/auth/google">Login with google</a>');
     })
-    .post(async (req, res) => {
-        // get user data from req.body
-        const { email, password } = req.body;
+// .post(async (req, res) => {
+//     // get user data from req.body
+//     const { email, password } = req.body;
 
-        // verify user data
-        let results = await database.GetUserFromEmail(email);
-        if (!results || !(await database.checkPassword(results, password))) {
-            console.log('Email or password is incorrect');
-            res.status(401).jsonp({ message: "Your email or password is incorrect" });
-            return;
-        }
+//     // verify user data
+//     let results = await database.GetUserFromEmail(email);
+//     if (!results || !(await database.checkPassword(results, password))) {
+//         console.log('Email or password is incorrect');
+//         res.status(401).jsonp({ message: "Your email or password is incorrect" });
+//         return;
+//     }
 
-        // save user's data in session memory
-        const user = { user_id: results[0].owner_id, user_email: email, user_name: results[0].username };
-        req.session.passport = { user };
+//     // save user's data in session memory
+//     const user = { user_id: results[0].owner_id, user_email: email, user_name: results[0].username };
+//     req.session.passport = { user };
 
-        // send session data to client
-        res.status(200).jsonp({ message: "Logged in", user });
-        return;
-    })
+//     // send session data to client
+//     res.status(200).jsonp({ message: "Logged in", user });
+//     return;
+// })
 
 router.route('/logout')
     .get((req, res) => {
@@ -71,26 +71,26 @@ router.route('/register')
     .get(redirectToHomePageIfAlreadyLoggedIn, (req, res) => {
         res.send('this account is not registered');
     })
-    .post(async (req, res) => {
-        // get user data from req.body
-        const { email, password, phone_number, user_name } = req.body;
-        const users = [email, phone_number, user_name, password];
+// .post(async (req, res) => {
+//     // get user data from req.body
+//     const { email, password, phone_number, user_name } = req.body;
+//     const users = [email, phone_number, user_name, password];
 
-        // verify user data
-        let results = await database.GetUserFromEmail(email);
-        if (results) {
-            res.status(401).jsonp("Email has already existed");
-            return;
-        }
+//     // verify user data
+//     let results = await database.GetUserFromEmail(email);
+//     if (results) {
+//         res.status(401).jsonp("Email has already existed");
+//         return;
+//     }
 
-        // save user's data in session memory
-        const user = { user_id: await database.createAccount(users), user_email: email, user_name: user_name };
-        req.session.passport = { user };
+//     // save user's data in session memory
+//     const user = { user_id: await database.createAccount(users), user_email: email, user_name: user_name };
+//     req.session.passport = { user };
 
-        // send session data to client
-        res.status(201).jsonp({ message: "Registerd", user });
-        return;
-    })
+//     // send session data to client
+//     res.status(201).jsonp({ message: "Registerd", user });
+//     return;
+// })
 
 //======================================= Google Auth
 router.route('/auth/google')
