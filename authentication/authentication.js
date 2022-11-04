@@ -57,7 +57,7 @@ router.route('/login')
 router.route('/logout')
     .get((req, res) => {
         if (req.session.passport && req.cookies.user_sid) {
-            console.log("Goodbye " + req.session.passport.user[0].username);
+            // console.log("Goodbye " + req.session.passport.user[0].username);
 
             res.clearCookie("user_sid");
             res.status(200).jsonp("Logged out");
