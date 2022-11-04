@@ -38,7 +38,6 @@ app.get('/dashboard', redirectToLoginPage, (req, res) => {
     res.json(req.session.passport);
 });
 
-var port_number = server.listen(process.env.PORT || 3000);
-app.listen(port_number, () => {
+app.listen(process.env.PORT || 5000, () => {
     console.log(`App is listening on port 8080`);
 });
