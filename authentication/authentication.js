@@ -61,7 +61,7 @@ router.route('/logout')
 
             res.clearCookie("user_sid");
             res.status(200).jsonp("Logged out");
-            res.redirect("/");
+            // res.redirect("/");
         } else {
             res.status(401).redirect("/login");
         }
