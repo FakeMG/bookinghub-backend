@@ -1,4 +1,4 @@
-// const database = require('../database');
+const database = require('../database');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -8,10 +8,11 @@ const GOOGLE_CLIENT_SECRET = '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';
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://bookinghub-backend.herokuapp.com/auth/google/callback"
+    callbackURL: "http://localhost:8080/auth/google/callback"
 },
     async function (accessToken, refreshToken, profile, cb) {
-        return cb(null, profile);
+        let userProfileInDatabase = await database.GetUserFromEmail(profile.emails.at(0).value);
+        return cb(null, userProfileInDatabase);
     }
 ));
 

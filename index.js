@@ -32,12 +32,12 @@ app.get('/', (req, res) => {
     res.send('HomePage <br> <a href="/login">Login</a>');
 });
 
-app.use(require('./authentication/authentication'));
+app.use('/user', require('./route/user'));
 
 app.get('/dashboard', redirectToLoginPage, (req, res) => {
     res.json(req.session.passport);
 });
 
-app.listen(process.env.PORT || 5000, () => {
+app.listen(8080, () => {
     console.log(`App is listening on port 8080`);
 });
