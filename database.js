@@ -3,10 +3,10 @@ const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
 
 var mysql_pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "changbiet247",
-    database: "bookinghub"
+    host: "us-cdbr-east-06.cleardb.net",
+    user: "bfeb18c3539189",
+    password: "2101ba18",
+    database: "heroku_687ce1ec86d392a"
 })
 
 let GetUserFromEmail = function (email) {
