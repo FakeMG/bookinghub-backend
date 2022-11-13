@@ -40,7 +40,6 @@ router.route('/login')
         // verify user data
         let results = await database.GetUserFromEmail(email);
         if (!results || !(await database.checkPassword(results, password))) {
-            console.log('Email or password is incorrect');
             res.status(401).jsonp({ message: "Your email or password is incorrect" });
             return;
         }
@@ -72,22 +71,27 @@ router.route('/register')
         // get user data from req.body
         const { email, password, firstName, lastName, dob, gender, phone_number, isOwner } = req.body;
         const users = [email, password, firstName, lastName, dob, GetCurrentDate(), gender, phone_number, isOwner];
-        console.log(GetCurrentDate())
 
-        // verify user email
-        let results = await database.GetUserFromEmail(email);
-        if (results) {
-            res.status(401).jsonp({ message: "Email has already existed" });
+        try {
+            // verify user email
+            let results = await database.GetUserFromEmail(email);
+            if (results) {
+                res.status(401).jsonp({ message: "Email has already existed" });
+                return;
+            }
+
+            // save user's data in session memory
+            const user = { user_id: await database.createAccount(users), user_email: email, firstName: firstName, lastName: lastName, isOwner: isOwner };
+            req.session.passport = { user };
+
+            // send session data to client
+            res.status(201).jsonp({ message: "User registered", user });
             return;
         }
-
-        // save user's data in session memory
-        const user = { user_id: await database.createAccount(users), user_email: email, firstName: firstName, lastName: lastName, isOwner: isOwner };
-        req.session.passport = { user };
-
-        // send session data to client
-        res.status(201).jsonp({ message: "User registerd", user });
-        return;
+        catch (err) {
+            res.status(401).jsonp({ err });
+            return;
+        }
     })
 
 function GetCurrentDate() {
@@ -101,38 +105,45 @@ function GetCurrentDate() {
 
 router.route('/:id')
     .delete(async (req, res) => {
-        // get user data from req.body
-        const { id } = req.params;
-        console.log(id)
+        try {
+            // get user data from req.body
+            const { id } = req.params;
 
-        // verify user email
-        let results = await database.GetUserFromID(id);
-        if (!results) {
-            res.status(401).jsonp({ message: "User doesn't exist" });
+            // verify user email
+            let results = await database.GetUserFromID(id);
+            if (!results) {
+                res.status(401).jsonp({ message: "User doesn't exist" });
+                return;
+            }
+
+            await database.deleteAccount(id);
+
+            // send session data to client
+            res.status(200).jsonp({ message: "User deleted" });
             return;
         }
-
-        await database.deleteAccount(id);
-
-        // send session data to client
-        res.status(200).jsonp({ message: "User deleted" });
-        return;
+        catch (err) {
+            res.status(401).jsonp({ err });
+            return;
+        }
     })
 
 router.route('/')
     .get(async (req, res) => {
-        const { limit } = req.query;
+        try {
+            let results = await database.GetUser(req.query);
+            if (!results) {
+                res.status(401).jsonp({ message: "No results found" });
+                return;
+            }
 
-        // verify user email
-        let results = await database.GetUser(limit);
-        if (!results) {
-            res.status(401).jsonp({ message: "User doesn't exist" });
+            res.status(200).jsonp({ results });
             return;
         }
-
-        // send session data to client
-        res.status(200).jsonp({ results });
-        return;
+        catch (err) {
+            res.status(401).jsonp({ err });
+            return;
+        }
     })
 
 
